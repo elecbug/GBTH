@@ -4,14 +4,14 @@ namespace GBTH
 {
     public partial class MainForm : Form
     {
-        private SplitContainer tool_container;
-        private SplitContainer container;
-        private IngredientList list_view;
-        private ReportGrid grid_view;
-        private NumericUpDown numeric;
-        private Button print;
-        private Label label;
-        private Button sync;
+        private SplitContainer tool_container;  // 최상위 수평 분할 컨테이너
+        private SplitContainer container;       // 하단 수직 분할 컨테이너
+        private IngredientList list_view;       // 왼쪽 리스트
+        private ReportGrid grid_view;           // 오른쪽 표
+        private NumericUpDown numeric;          // 년도 선택 컨트롤
+        private Button print;                   // 엑셀 변환 버튼
+        private Label label;                    // 변환 퍼센트 레이블
+        private Button sync;                    // 동기화 버튼
 
         public MainForm()
         {
@@ -69,7 +69,7 @@ namespace GBTH
                 Parent = this.tool_container.Panel1,
                 Size = this.numeric.Size,
                 Visible = true,
-                Text = "엑셀 파일 생성",
+                Text = "엑셀 생성",
             };
             this.print.Click += PrintClick;
 

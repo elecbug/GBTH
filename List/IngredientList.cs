@@ -3,8 +3,14 @@ using System.Text.Json;
 
 namespace GBTH.List
 {
+    /// <summary>
+    /// 장부 목록 컨트롤
+    /// </summary>
     public class IngredientList : ListView
     {
+        /// <summary>
+        /// 품목 하나하나의 정보가 담긴 각 열
+        /// </summary>
         public class Row
         {
             public int Number { get; set; }
@@ -13,6 +19,9 @@ namespace GBTH.List
             public string? Unit { get; set; }
             public string? Assortment { get; set; }
         }
+        /// <summary>
+        /// 품목 하나하나의 각 보고서
+        /// </summary>
         public class Report
         {
             public int Number { get; set; }
@@ -20,6 +29,9 @@ namespace GBTH.List
             public string? Standard { get; set; }
             public List<ReportRow> Rows { get; set; } = new List<ReportRow>();
         }
+        /// <summary>
+        /// 품목 하나의 내부 보고서(오른쪽)의 열 하나
+        /// </summary>
         public class ReportRow
         {
             public int Number { get; set; }
@@ -44,6 +56,10 @@ namespace GBTH.List
                 this.Other = other;
             }
 
+            /// <summary>
+            /// 이차원 배열로 리스트를 변환
+            /// </summary>
+            /// <returns> 바뀐 이차원 배열 </returns>
             public string?[,] ToArray()
             {
                 return new string?[1, 10]
@@ -71,6 +87,10 @@ namespace GBTH.List
         private string? path;
         private Report? selected_report;
 
+        /// <summary>
+        /// 생성자
+        /// </summary>
+        /// <param name="grid_view"> 연동할 표 컨트롤의 레퍼런스 </param>
         public IngredientList(ref ReportGrid grid_view) : base()
         {
             this.Rows = new List<Row>();
@@ -91,6 +111,11 @@ namespace GBTH.List
             this.ColumnClick += IngredientListColumnClick;
         }
 
+        /// <summary>
+        /// 헤더 클릭, 정렬을 수행
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void IngredientListColumnClick(object? sender, ColumnClickEventArgs e)
         {
             this.ListViewItemSorter = new ListViewColumnSorter();
@@ -118,6 +143,12 @@ namespace GBTH.List
 
             this.Sort();
         }
+
+        /// <summary>
+        /// 품목 선택
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void IngredientListSelectionChanged(object? sender, EventArgs e)
         {
             if (this.SelectedItems.Count > 0)
@@ -145,6 +176,10 @@ namespace GBTH.List
             }
         }
 
+        /// <summary>
+        /// 품목의 종류를 추가
+        /// </summary>
+        /// <param name="row"></param>
         public void Add(Row row)
         {
             ListViewItem item = new ListViewItem(row.Number.ToString());
@@ -157,6 +192,11 @@ namespace GBTH.List
             this.Rows.Add(row);
             this.Items.Add(item);
         }
+
+        /// <summary>
+        /// 엑셀 파일로 변환
+        /// </summary>
+        /// <param name="label"> 변환율을 표기하는 레이블 </param>
         public void Print(Label label)
         {
             SaveData();
@@ -222,6 +262,9 @@ namespace GBTH.List
             stream.Close();
         }
 
+        /// <summary>
+        /// 새로운 품목의 데이터를 불러오는 메서드
+        /// </summary>
         private void LoadData()
         {
             this.grid_view.Rows.Clear();
@@ -241,6 +284,10 @@ namespace GBTH.List
                     );
             }
         }
+
+        /// <summary>
+        /// 현재 활성화된 품목의 데이터를 저장하는 메서드
+        /// </summary>
         public void SaveData()
         {
             if (this.selected_report != null)
@@ -270,6 +317,10 @@ namespace GBTH.List
             }
         }
 
+        /// <summary>
+        /// 데이터 직렬화 메서드
+        /// </summary>
+        /// <exception cref="Exception"></exception>
         public void Serialize()
         {
             string result = JsonSerializer.Serialize(this.Rows) + "\r" + JsonSerializer.Serialize(this.Reports);
@@ -290,20 +341,10 @@ namespace GBTH.List
             writer.Write(result);
             writer.Close();
         }
-        public void Serialize(string path_of_folder, int year)
-        {
-            string result = JsonSerializer.Serialize(this.Rows) + "\r" + JsonSerializer.Serialize(this.Reports);
 
-            if (!Directory.Exists(path_of_folder + "\\" + year))
-            {
-                Directory.CreateDirectory(path_of_folder + "\\" + year);
-            }
-
-            StreamWriter writer = new StreamWriter(path_of_folder + "\\" + year + "\\" + Properties.Resources.IngredientPath);
-            writer.Write(result);
-            writer.Close();
-        }
-
+        /// <summary>
+        /// 역직렬화 시 역직렬화 할 데이터가 없다면 기본 데이터 셋을 생성하는 메서드
+        /// </summary>
         public void PartedDeserialize()
         {
             EB.Excel.Stream stream = new EB.Excel.Stream(Environment.CurrentDirectory
@@ -334,6 +375,15 @@ namespace GBTH.List
             writer.Write(result);
             writer.Close();
         }
+        /// <summary>
+        /// 데이터 역직렬화 메서드
+        /// </summary>
+        /// <param name="grid_view"> 풀어낸 데이터를 표시할 컨트롤 </param>
+        /// <param name="path_of_folder"> 데이터의 위치 </param>
+        /// <param name="year"> 파일 분류 태그/년도 </param>
+        /// <param name="create_mode"> 생성 모드, 기본 False </param>
+        /// <returns> 역직렬화된 데이터가 담긴 리스트 컨트롤 </returns>
+        /// <exception cref="Exception"></exception>
         public static IngredientList Deserialize(ref ReportGrid grid_view, string path_of_folder, int year, bool create_mode = false)
         {
             if (!Directory.Exists(path_of_folder + "\\" + year) || create_mode)
