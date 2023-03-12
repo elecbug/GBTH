@@ -12,10 +12,10 @@ namespace GBTH
         private Button print;                   // 엑셀 변환 버튼
         private Label label;                    // 변환 퍼센트 레이블
         private Button sync;                    // 동기화 버튼
+        private ContextMenuStrip strip;         // 리스트 뷰 우클릭 다이얼로그
 
         public MainForm()
         {
-
             this.Load += MainFormLoad;
             this.FormClosed += MainFormFormClosed;
 
@@ -97,6 +97,21 @@ namespace GBTH
             this.list_view.Visible = true;
             this.list_view.Size = this.container.Panel1.ClientSize;
             this.list_view.Dock = DockStyle.Fill;
+            this.list_view.MouseClick += ListViewMouseClick;
+
+            this.strip = new ContextMenuStrip();
+            this.strip.Items.Add("수정").Click += (sender, e) => { };
+            this.strip.Items.Add("추가").Click += (sender, e) => { };
+            this.strip.Items.Add("삭제").Click += (sender, e) => { };
+        }
+
+        private void ListViewMouseClick(object? sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+
+                this.strip.Show(Control.MousePosition.X, Control.MousePosition.Y);
+            }
         }
 
         private void MainFormLoad(object? sender, EventArgs e)
