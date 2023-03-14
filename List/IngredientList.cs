@@ -430,5 +430,27 @@ namespace GBTH.List
                 throw new Exception("json rows data is null");
             }
         }
+
+        /// <summary>
+        /// 리스트 추가 메서드
+        /// </summary>
+        public void Add()
+        {
+
+        }
+        /// <summary>
+        /// 리스트 삭제 메서드
+        /// </summary>
+        public void Remove()
+        {
+
+        }
+        /// <summary>
+        /// 리스트 편집 메서드
+        /// </summary>
+        public void Edit()
+        {
+
+        }
     }
 }

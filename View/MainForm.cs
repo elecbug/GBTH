@@ -100,9 +100,9 @@ namespace GBTH
             this.list_view.MouseClick += ListViewMouseClick;
 
             this.strip = new ContextMenuStrip();
-            this.strip.Items.Add("수정").Click += (sender, e) => { };
-            this.strip.Items.Add("추가").Click += (sender, e) => { };
-            this.strip.Items.Add("삭제").Click += (sender, e) => { };
+            this.strip.Items.Add("수정").Click += (sender, e) => { (sender as IngredientList)!.Edit(); };
+            this.strip.Items.Add("추가").Click += (sender, e) => { (sender as IngredientList)!.Add(); };
+            this.strip.Items.Add("삭제").Click += (sender, e) => { (sender as IngredientList)!.Remove(); };
         }
 
         private void ListViewMouseClick(object? sender, MouseEventArgs e)
